@@ -31,7 +31,6 @@ export default class ResultsSection {
 
             this.section.appendChild(cardContainer);            
         } else {
-
             const noticeSection = document.createElement('section');
             noticeSection.className = 'noticeSection';
             

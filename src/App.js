@@ -5,7 +5,7 @@ import Loading from './components/Loading.js';
 import { api } from './api/theCatAPI.js';
 
 export default class App {
-    constructor($target) {        
+    constructor($target) { // 최상위 div       
         const searchingSection = new SearchingSection({
             $target,
             onSearch: keyword => {
