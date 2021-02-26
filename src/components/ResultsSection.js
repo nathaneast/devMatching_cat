@@ -3,15 +3,19 @@ import Card from './Card.js';
 export default class ResultsSection {
     constructor({$target, onClick}) {
         this.onClick = onClick;
-        this.data = null;
+        // this.data = null;
+        this.data = JSON.parse(localStorage.getItem('catData'));
         this.section = document.createElement('section');
         this.section.className = 'results-section';
 
         $target.appendChild(this.section);
+
+        this.render();
     }
 
     setState(data) {
         this.data = data;
+        localStorage.setItem('catData', JSON.stringify(data)); //추가
         this.render();
     }
 

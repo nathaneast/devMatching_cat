@@ -1,28 +1,54 @@
-import { createWrapper } from '../util/wrapper.js';
+// import { createWrapper } from '../util/wrapper.js';
+import Term from './Term.js';
 
 export default class SearchBar {    
+    searchTerm = [];
     
     constructor({$target, onSearch, onRandom}) {
         this.onSearch = onSearch;
         this.onRandom = onRandom;
         this.section = document.createElement('section');
         this.section.className = 'searching-section';
+        this.termWrapper = document.createElement('div');
+        this.termWrapper.className = 'term-wrapper';
 
         $target.appendChild(this.section);
 
         this.render();
     }
 
+    addSearchTerm(term) {
+        this.searchTerm.push(term);
+        if (this.searchTerm.length > 5) {
+            this.searchTerm.shift();
+        }
+
+        console.log(this.searchTerm, 'this.searchTerm');
+        this.renderSearchTerm();
+    }
+
     searchByKeyword(event) {
         if(event.keyCode == 13){
             const keyword = document.querySelector('.search-box').value;
             this.onSearch(keyword);
+            this.addSearchTerm(keyword);
         }
     }
 
     deleteKeyword(){
         const searchBox = document.querySelector('.search-box');
         searchBox.value = '';
+    }
+
+    renderSearchTerm() {
+        this.termWrapper.innerHTML = '';
+        this.searchTerm.map(term => {
+            new Term({
+                $target: this.termWrapper,
+                data: term,
+                onClick: this.onSearch,
+           });
+        });
     }
 
     render() {
@@ -38,7 +64,12 @@ export default class SearchBar {
         searchBox.addEventListener('focus', this.deleteKeyword);
         searchBox.addEventListener('keyup', event => { this.searchByKeyword(event); });
         
-        this.section.appendChild(randomBtn);
-        this.section.appendChild(searchBox);
+        const searchRow = document.createElement('div');
+        searchRow.appendChild(randomBtn);
+        searchRow.appendChild(searchBox);
+        this.section.appendChild(searchRow);
+        this.section.appendChild(this.termWrapper);
+
+        this.renderSearchTerm();
     }
 }

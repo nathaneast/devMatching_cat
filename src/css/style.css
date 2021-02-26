@@ -2,21 +2,35 @@
     margin: 0;
     padding: 0;
 }
-
+/* SearchingSection */
 .searching-section {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .search-box {
-    width: 50%;
+    width: 300px;
     font-size: 20px;
 }
 
 .random-btn {
     font-size: 50px;
     margin-right: 10px;
+}
+
+.term-wrapper {
+    display: flex;
+}
+
+.term-item {
+    padding: 5px;
+}
+
+/* ResultsSection */
+.results-section {
+    
 }
 
 .noticeSection {

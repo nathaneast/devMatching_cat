@@ -26,7 +26,7 @@ export default class App {
             $target,
             onClick: data => {
                 detailModal.setState(data);
-            }
+            },
         });
 
         const detailModal = new DetailModal({
