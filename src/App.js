@@ -5,43 +5,49 @@ import Loading from './components/Loading.js';
 import { api } from './api/theCatAPI.js';
 
 export default class App {
-    constructor($target) { // 최상위 div       
-        const searchingSection = new SearchingSection({
-            $target,
-            onSearch: keyword => {
-                loading.toggleSpinner();
-                api.fetchCats(keyword).then(data => { 
-                    loading.toggleSpinner();
-                    resultsSection.setState(data); });
-            },
-            onRandom: () => {
-                loading.toggleSpinner();
-                api.fetchRandomCats().then(data => { 
-                    loading.toggleSpinner();
-                    resultsSection.setState(data); });
-            }
-        });
+  constructor($target) {
+    // 최상위 div
+    const onRandom = () => {
+      loading.toggleSpinner();
+      api.fetchRandomCats().then((data) => {
+        loading.toggleSpinner();
+        resultsSection.setState(data);
+      });
+    };
 
-        const resultsSection = new ResultsSection({
-            $target,
-            onClick: data => {
-                detailModal.setState(data);
-            },
+    const searchingSection = new SearchingSection({
+      $target,
+      onSearch: (keyword) => {
+        loading.toggleSpinner();
+        api.fetchCats(keyword).then((data) => {
+          loading.toggleSpinner();
+          resultsSection.setState(data);
         });
+      },
+      onRandom,
+    });
 
-        const detailModal = new DetailModal({
-            $target
-        });
+    const resultsSection = new ResultsSection({
+      $target,
+      onClick: (data) => {
+        detailModal.setState(data);
+      },
+      onInfinityScroll: onRandom,
+    });
 
-        const loading = new Loading({
-            $target
-        });
+    const detailModal = new DetailModal({
+      $target,
+    });
 
-        this.focusOnSearchBox();
-    }
-    
-    focusOnSearchBox() {
-        const searchBox = document.querySelector('.search-box');
-        searchBox.focus();
-    }
+    const loading = new Loading({
+      $target,
+    });
+
+    this.focusOnSearchBox();
+  }
+
+  focusOnSearchBox() {
+    const searchBox = document.querySelector('.search-box');
+    searchBox.focus();
+  }
 }

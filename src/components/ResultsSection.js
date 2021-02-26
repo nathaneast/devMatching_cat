@@ -1,9 +1,9 @@
 import Card from './Card.js';
 
 export default class ResultsSection {
-  constructor({ $target, onClick }) {
+  constructor({ $target, onClick, onInfinityScroll }) {
     this.onClick = onClick;
-    // this.data = null;
+    this.onInfinityScroll = onInfinityScroll;
     this.data = localStorage.getItem('catData')
       ? JSON.parse(localStorage.getItem('catData'))
       : [];
@@ -15,9 +15,26 @@ export default class ResultsSection {
     this.render();
   }
 
+  onScroll(event) {
+    console.log(
+      window.pageYOffset + document.documentElement.clientHeight,
+      'window.pageYOffset + document.documentElement.clientHeight'
+    );
+    console.log(
+      document.documentElement.scrollHeight - 500,
+      'document.documentElement.scrollHeight - 500'
+    );
+    if (
+      window.pageYOffset + document.documentElement.clientHeight >
+      document.documentElement.scrollHeight - 500
+    ) {
+      this.onInfinityScroll();
+    }
+  }
+
   setState(data) {
-    this.data = data;
-    localStorage.setItem('catData', JSON.stringify(data)); //추가
+    this.data = [...this.data, data];
+    localStorage.setItem('catData', JSON.stringify(this.data)); //추가
     this.render();
   }
 
@@ -36,6 +53,23 @@ export default class ResultsSection {
       });
 
       this.section.appendChild(cardContainer);
+      //   window.addEventListener('scroll', this.onScroll);
+      window.addEventListener('scroll', (event) => {
+        console.log(
+          window.pageYOffset + document.documentElement.clientHeight,
+          'window.pageYOffset + document.documentElement.clientHeight'
+        );
+        console.log(
+          document.documentElement.scrollHeight - 500,
+          'document.documentElement.scrollHeight - 500'
+        );
+        if (
+          window.pageYOffset + document.documentElement.clientHeight >
+          document.documentElement.scrollHeight - 500
+        ) {
+          this.onInfinityScroll();
+        }
+      });
     } else {
       const noticeSection = document.createElement('section');
       noticeSection.className = 'noticeSection';

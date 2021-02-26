@@ -1,96 +1,109 @@
 export default class DetailModal {
-    constructor({$target}) {
-        this.isVisible = false;
-        this.data = null;
-        this.modalWrapper = document.createElement('div');
-        this.modalWrapper.className = 'modal-wrapper';
-        this.modalWrapper.classList.add('hidden');
-        
-        $target.appendChild(this.modalWrapper);
+  constructor({ $target }) {
+    this.isVisible = false;
+    this.data = null;
+    this.modalWrapper = document.createElement('div');
+    this.modalWrapper.className = 'modal-wrapper';
+    this.modalWrapper.classList.add('hidden');
 
-        this.render();
+    $target.appendChild(this.modalWrapper);
+
+    this.render();
+  }
+
+  toggleModal() {
+    this.isVisible = !this.isVisible;
+
+    const modal = document.querySelector('.modal-wrapper');
+    modal.classList.toggle('hidden');
+  }
+
+  setState(data) {
+    this.toggleModal();
+    this.data = data;
+    this.render();
+  }
+
+  onClose() {
+    this.toggleModal();
+    this.data = null;
+    this.modalWrapper.innerHTML = '';
+  }
+
+  controlDeviceWidth() {
+    if (Modernizr.mq('(max-width: 768px)')) {
+      document.querySelector('.modal-contents').className.add('fullScreen');
     }
+  }
 
-    toggleModal(){
-        this.isVisible = !this.isVisible;
-        
-        const modal = document.querySelector('.modal-wrapper');
-        modal.classList.toggle('hidden');
-    }
+  render() {
+    if (!this.isVisible) return;
 
-    setState(data) {
-        this.toggleModal();
-        this.data = data;
-        this.render();
-    }
-    
-    onClose() {
-        this.toggleModal();
-        this.data = null;
-        this.modalWrapper.innerHTML = '';
-    }
+    const { url } = this.data;
+    const { name, origin, temperament } = this.data.breeds[0]
+      ? this.data.breeds[0]
+      : { name: '정보없음', origin: '정보없음', temperament: '정보없음' };
+    const { imperial, metric } = this.data.breeds[0]
+      ? this.data.breeds[0].weight
+      : { imperial: '정보없음', metric: '정보없음' };
 
-    render() {
-        if(!this.isVisible) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
 
-        const { url } = this.data;
-        const { name, origin, temperament } = this.data.breeds[0] ?
-            this.data.breeds[0] : {name: '정보없음', origin: '정보없음', temperament: '정보없음'};
-        const { imperial, metric } = this.data.breeds[0] ?
-            this.data.breeds[0].weight : {imperial: '정보없음', metric: '정보없음'};
+    const modalContents = document.createElement('section');
+    modalContents.className = 'modal-contents';
 
-        const overlay = document.createElement('div');
-        overlay.className = 'overlay';
+    const modalHeader = document.createElement('header');
+    modalHeader.className = 'modal-header';
 
-        const modalContents = document.createElement('section');
-        modalContents.className = 'modal-contents';
+    const modalTitle = document.createElement('p');
+    modalTitle.className = 'modal-title';
+    modalTitle.innerText = name;
 
-        const modalHeader = document.createElement('header');
-        modalHeader.className = 'modal-header';
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'close-btn';
+    closeBtn.innerText = 'X';
 
-        const modalTitle = document.createElement('p');
-        modalTitle.className = 'modal-title';
-        modalTitle.innerText = name;
+    const modalImage = document.createElement('img');
+    modalImage.className = 'modal-image';
+    modalImage.src = url;
 
-        const closeBtn = document.createElement('span');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerText = 'X';
+    const modalInfo = document.createElement('article');
+    modalInfo.className = 'modal-info';
 
-        const modalImage = document.createElement('img');
-        modalImage.className = 'modal-image';
-        modalImage.src = url;
+    const catOrigin = document.createElement('p');
+    catOrigin.className = 'cat-origin';
+    catOrigin.innerText = origin;
 
-        const modalInfo = document.createElement('article');
-        modalInfo.className = 'modal-info';
+    const catTemperament = document.createElement('p');
+    catTemperament.className = 'cat-temperament';
+    catTemperament.innerText = temperament;
 
-        const catOrigin = document.createElement('p');
-        catOrigin.className = 'cat-origin';
-        catOrigin.innerText = origin;
+    const catWeight = document.createElement('p');
+    catWeight.className = 'cat-width';
+    catWeight.innerText = `${imperial} (imperial) / ${metric} (metric)`;
 
-        const catTemperament = document.createElement('p');
-        catTemperament.className= 'cat-temperament';
-        catTemperament.innerText = temperament;
+    closeBtn.addEventListener('click', () => {
+      this.onClose();
+    });
+    overlay.addEventListener('click', () => {
+      this.onClose();
+    });
 
-        const catWeight = document.createElement('p');
-        catWeight.className = 'cat-width';
-        catWeight.innerText = `${imperial} (imperial) / ${metric} (metric)`;
+    modalHeader.appendChild(modalTitle);
+    modalHeader.appendChild(closeBtn);
 
-        closeBtn.addEventListener('click', () => { this.onClose(); });
-        overlay.addEventListener('click', () => { this.onClose(); });
-        
-        modalHeader.appendChild(modalTitle);
-        modalHeader.appendChild(closeBtn); 
+    modalInfo.appendChild(catOrigin);
+    modalInfo.appendChild(catTemperament);
+    modalInfo.appendChild(catWeight);
 
-        modalInfo.appendChild(catOrigin);
-        modalInfo.appendChild(catTemperament);
-        modalInfo.appendChild(catWeight);
+    modalContents.appendChild(modalHeader);
+    modalContents.appendChild(modalImage);
+    modalContents.appendChild(modalInfo);
 
-        modalContents.appendChild(modalHeader);
-        modalContents.appendChild(modalImage);
-        modalContents.appendChild(modalInfo);
+    this.modalWrapper.appendChild(overlay);
+    this.modalWrapper.appendChild(modalContents);
 
-        this.modalWrapper.appendChild(overlay);
-        this.modalWrapper.appendChild(modalContents);
-
-    }
+    this.controlDeviceWidth();
+  }
 }
