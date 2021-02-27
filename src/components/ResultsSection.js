@@ -1,9 +1,9 @@
 import Card from './Card.js';
 
 export default class ResultsSection {
-  constructor({ $target, onClick, onInfinityScroll }) {
+  constructor({ $target, onClick, onRandom }) {
     this.onClick = onClick;
-    this.onInfinityScroll = onInfinityScroll;
+    this.onRandom = onRandom;
     this.data = localStorage.getItem('catData')
       ? JSON.parse(localStorage.getItem('catData'))
       : [];
@@ -15,37 +15,29 @@ export default class ResultsSection {
     this.render();
   }
 
-  onScroll(event) {
-    console.log(
-      window.pageYOffset + document.documentElement.clientHeight,
-      'window.pageYOffset + document.documentElement.clientHeight'
-    );
-    console.log(
-      document.documentElement.scrollHeight - 500,
-      'document.documentElement.scrollHeight - 500'
-    );
-    if (
-      window.pageYOffset + document.documentElement.clientHeight >
-      document.documentElement.scrollHeight - 500
-    ) {
-      this.onInfinityScroll();
-    }
+  fetchData() {
+    this.scrollLoading = true;
+    this.onRandom();
   }
 
   setState(data) {
-    this.data = [...this.data, data];
-    localStorage.setItem('catData', JSON.stringify(this.data)); //추가
-    this.render();
+    if (data.length) {
+      this.data = [...this.data, ...data];
+      localStorage.setItem('catData', JSON.stringify(this.data)); //추가
+      this.render();
+    }
   }
 
   render() {
     this.section.innerHTML = '';
+    this.scrollLoading = false;
+
     if (this.data.length > 0) {
       const cardContainer = document.createElement('div');
       cardContainer.className = 'card-container';
 
       this.data.map((cat) => {
-        new Card({
+        return new Card({
           $target: cardContainer,
           data: cat,
           onClick: this.onClick,
@@ -53,23 +45,16 @@ export default class ResultsSection {
       });
 
       this.section.appendChild(cardContainer);
-      //   window.addEventListener('scroll', this.onScroll);
+
       window.addEventListener('scroll', (event) => {
-        console.log(
-          window.pageYOffset + document.documentElement.clientHeight,
-          'window.pageYOffset + document.documentElement.clientHeight'
-        );
-        console.log(
-          document.documentElement.scrollHeight - 500,
-          'document.documentElement.scrollHeight - 500'
-        );
         if (
           window.pageYOffset + document.documentElement.clientHeight >
-          document.documentElement.scrollHeight - 500
-        ) {
-          this.onInfinityScroll();
-        }
+          document.documentElement.scrollHeight - 500 && !this.scrollLoading
+          ) {
+          this.fetchData();
+         }
       });
+
     } else {
       const noticeSection = document.createElement('section');
       noticeSection.className = 'noticeSection';

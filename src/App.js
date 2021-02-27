@@ -32,7 +32,7 @@ export default class App {
       onClick: (data) => {
         detailModal.setState(data);
       },
-      onInfinityScroll: onRandom,
+      onRandom,
     });
 
     const detailModal = new DetailModal({
