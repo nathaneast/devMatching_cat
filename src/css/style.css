@@ -49,6 +49,11 @@
   width: 350px;
 }
 
+/* banner */
+.banner-container {
+  display: flex;
+}
+
 /* ResultsSection */
 .card-container {
   display: grid;
@@ -178,14 +183,14 @@
 
 /* dark mode 처리 */
 @media (prefers-color-scheme: light) {
-  body {
+  body, .modal-contents {
     background-color: #ffffff;
     color: #000000;
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
+  body, .modal-contents {
     background-color: #000000;
     color: #ffffff;
   }

@@ -7,8 +7,6 @@ export default class BannerSection {
     this.section = document.createElement('section');
     this.section.className = 'banner-section';
     this.section.classList.add('hidden');
-    this.bannerList = document.createElement('article');
-    this.bannerList.className = 'banner-list';
     this.randomCats;
 
     $target.appendChild(this.section);
@@ -48,7 +46,16 @@ export default class BannerSection {
   render() {
     if (!this.isVisible) return;
     this.section.innerHTML = `
-      <div>배너!</div>
+      <div class='banner-container'>
+        <div>
+          <span>왼</span>
+        </div>
+        <ul class='banner-list'>
+        </ul>
+        <div>
+          <span>오</span>
+        </div>
+      </div>
     `;
 
     // const randomBtn = document.createElement('span');
