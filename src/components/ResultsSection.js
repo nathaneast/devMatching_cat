@@ -20,12 +20,16 @@ export default class ResultsSection {
     this.onRandom();
   }
 
-  setState(data) {
-    if (data.length) {
+  setState(data, scrolling) {
+    if (scrolling) {
+      if (!data.length) return;
       this.data = [...this.data, ...data];
-      localStorage.setItem('catData', JSON.stringify(this.data)); //추가
-      this.render();
+    } else {
+      this.data = data; 
     }
+    
+    localStorage.setItem('catData', JSON.stringify(this.data)); //추가
+    this.render();
   }
 
   render() {
@@ -34,13 +38,38 @@ export default class ResultsSection {
 
     if (this.data.length > 0) {
       const cardContainer = document.createElement('div');
+      let target;
       cardContainer.className = 'card-container';
 
-      this.data.map((cat) => {
+      cardContainer.addEventListener('click', (event) => {
+        const checkingTopNode = (className) => (
+          event.target.classList.contains(className));
+
+        if (event.target === event.currentTarget) return;
+
+        if (checkingTopNode('cat-card')) {
+          target = event.target;
+        } else if (
+          checkingTopNode('card-image') ||
+          checkingTopNode('card-info')
+        ) {
+          target = event.target.parentNode;
+        } else if (
+          checkingTopNode('cat-name') ||
+          checkingTopNode('cat-origin')
+        ) {
+          target = event.target.parentNode.parentNode;
+        }
+            
+        this.onClick(this.data[Number(target.dataset.index)]);
+      });
+
+
+      this.data.map((cat, index) => {
         return new Card({
           $target: cardContainer,
           data: cat,
-          onClick: this.onClick,
+          cardIndex: index
         });
       });
 

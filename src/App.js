@@ -1,5 +1,6 @@
 import SearchingSection from './components/SearchingSection.js';
 import ResultsSection from './components/ResultsSection.js';
+import BannerSection from './components/BannerSection.js';
 import DetailModal from './components/DetailModal.js';
 import Loading from './components/Loading.js';
 import { api } from './api/theCatAPI.js';
@@ -11,7 +12,7 @@ export default class App {
       loading.toggleSpinner();
       api.fetchRandomCats().then((data) => {
         loading.toggleSpinner();
-        resultsSection.setState(data);
+        resultsSection.setState(data, true);
       });
     };
 
@@ -21,10 +22,16 @@ export default class App {
         loading.toggleSpinner();
         api.fetchCats(keyword).then((data) => {
           loading.toggleSpinner();
-          resultsSection.setState(data);
+          resultsSection.setState(data, false);
         });
       },
       onRandom,
+      onBanner: (isOn) => bannerSection.setState(isOn),
+    });
+
+    const bannerSection = new BannerSection({
+      $target,
+      getRandomCats: api.fetchRandomCats,
     });
 
     const resultsSection = new ResultsSection({

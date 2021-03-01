@@ -4,9 +4,10 @@ import Term from './Term.js';
 export default class SearchBar {
   searchTerm = [];
 
-  constructor({ $target, onSearch, onRandom }) {
+  constructor({ $target, onSearch, onRandom, onBanner }) {
     this.onSearch = onSearch;
     this.onRandom = onRandom;
+    this.onBanner = onBanner;
     this.section = document.createElement('section');
     this.section.className = 'searching-section';
     this.termWrapper = document.createElement('div');
@@ -31,6 +32,7 @@ export default class SearchBar {
       const keyword = document.querySelector('.search-box').value;
       this.onSearch(keyword);
       this.addSearchTerm(keyword);
+      this.onBanner(true);
     }
   }
 
@@ -46,6 +48,7 @@ export default class SearchBar {
         $target: this.termWrapper,
         data: term,
         onClick: this.onSearch,
+        onBanner: () => this.onBanner(true),
       });
     });
   }
@@ -69,7 +72,10 @@ export default class SearchBar {
     checkBoxWrapper.appendChild(checkBox);
     checkBoxWrapper.appendChild(checkBoxLabel);
 
-    randomBtn.addEventListener('click', this.onRandom);
+    randomBtn.addEventListener('click', () => {
+      this.onBanner(false);
+      this.onRandom();
+    });
     searchBox.addEventListener('focus', this.deleteKeyword);
     searchBox.addEventListener('keyup', (event) => {
       this.searchByKeyword(event);

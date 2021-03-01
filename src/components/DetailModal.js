@@ -31,8 +31,8 @@ export default class DetailModal {
   }
 
   controlDeviceWidth() {
-    if (Modernizr.mq('(max-width: 768px)')) {
-      document.querySelector('.modal-contents').className.add('fullScreen');
+    if (window.innerWidth <= 768) {
+      document.querySelector('.modal-contents').classList.add('fullScreen');
     }
   }
 
